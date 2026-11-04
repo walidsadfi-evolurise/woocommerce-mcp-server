@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `list_coupons` read tool with `expired` / `exhausted` flags.
+
 ## 0.1.0 — 2026-11-04
 
 - 8 read tools: store_info, list_products, get_product, low_stock_products, list_orders, get_order, search_customers, sales_summary.

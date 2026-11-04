@@ -249,6 +249,33 @@ export function createServer(deps: ServerDeps): McpServer {
     },
   );
 
+  server.registerTool(
+    "list_coupons",
+    {
+      title: "List coupons",
+      description: "Coupons with type, amount, usage and expiry. Use it to answer \"is code X still valid?\" before proposing anything.",
+      inputSchema: { code: z.string().optional().describe("Exact coupon code"), ...Pagination },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    async (args) => {
+      try {
+        const page = await client.getPage<AnyJson>("coupons", {
+          ...args,
+          _fields: "id,code,discount_type,amount,free_shipping,usage_count,usage_limit,date_expires,minimum_amount,individual_use,status",
+        });
+        const now = Date.now();
+        const items = page.items.map((c) => ({
+          ...c,
+          expired: typeof c.date_expires === "string" && c.date_expires !== "" ? new Date(c.date_expires).getTime() < now : false,
+          exhausted: typeof c.usage_limit === "number" && c.usage_limit > 0 ? (c.usage_count ?? 0) >= c.usage_limit : false,
+        }));
+        return ok({ ...page, items });
+      } catch (e) {
+        return fail(e);
+      }
+    },
+  );
+
   // ----------------------------------------------------------- proposals (write path)
   const propose = (kind: ProposalKind, summary: string, reason: string, payload: Record<string, unknown>): ToolResult => {
     const p = proposals.create({ kind, summary, reason, payload });

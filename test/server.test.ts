@@ -15,7 +15,7 @@ describe("read tools", () => {
     const { tools } = await c.client.listTools();
     const names = tools.map((t) => t.name).sort();
     expect(names).toEqual([
-      "apply_proposal", "get_order", "get_product", "list_orders", "list_products", "list_proposals", "low_stock_products",
+      "apply_proposal", "get_order", "get_product", "list_coupons", "list_orders", "list_products", "list_proposals", "low_stock_products",
       "propose_order_note", "propose_order_status", "propose_price_update", "propose_refund", "propose_stock_update",
       "sales_summary", "search_customers", "store_info",
     ]);
@@ -83,6 +83,19 @@ describe("read tools", () => {
     const c = await connect(testConfig(woo.url, { redactPii: false }));
     const r = await c.call("search_customers", { search: "dupont" });
     expect(r.data!.items[0].email).toBe("marie.dupont@example.com");
+    await c.close();
+  });
+
+  it("list_coupons flags expired and exhausted codes", async () => {
+    const c = await connect(testConfig(woo.url));
+    const all = await c.call("list_coupons");
+    expect(all.data!.total).toBe(2);
+    const byCode = Object.fromEntries(all.data!.items.map((x: { code: string }) => [x.code, x]));
+    expect(byCode.WELCOME10).toMatchObject({ expired: false, exhausted: false });
+    expect(byCode.OLD5).toMatchObject({ expired: true, exhausted: true });
+    const one = await c.call("list_coupons", { code: "OLD5" });
+    expect(one.data!.items).toHaveLength(1);
+    expect(woo.requests.at(-1)!.query.code).toBe("OLD5");
     await c.close();
   });
 

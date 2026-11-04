@@ -30,6 +30,7 @@ Built after wiring agents into client stores: the useful part was never "can the
 | `get_order` with notes | `list_proposals` |
 | `search_customers` | `apply_proposal` — refused unless approved and `WOO_ALLOW_WRITES=true` |
 | `sales_summary` week / month / last_month / year / range | |
+| `list_coupons` validity, usage, expiry flags | |
 
 Every tool carries MCP annotations (`readOnlyHint`, `destructiveHint`) so clients can show the right confirmation UI.
 
@@ -109,7 +110,7 @@ Tests spin up a fake WooCommerce REST API (`test/mock-woo.ts`) and talk to the s
 
 - [ ] Resources: `woo://orders/{id}` for clients that prefer resources over tools
 - [ ] Prompts: daily store briefing, "handle this support ticket"
-- [ ] Coupons and shipping zones (read)
+- [ ] Shipping zones (read)
 - [ ] Webhook listener → MCP notifications on new orders
 
 ## License
