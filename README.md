@@ -129,7 +129,7 @@ Branchez Claude Desktop, Cursor ou votre propre agent sur une boutique et demand
 - **Données personnelles masquées par défaut** : emails, téléphones, noms et adresses postales ; la ville et le pays restent pour les questions de livraison.
 - **Deux identités** en mode HTTP : token agent et token approbateur, obligatoirement différents.
 - **Une proposition s'applique au plus une fois**, avec son résultat ou son erreur archivé.
-- Transports stdio et HTTP, image Docker, 26 tests contre une fausse API WooCommerce.
+- Transports stdio et HTTP, image Docker, 27 tests contre une fausse API WooCommerce.
 
 ```bash
 npx woocommerce-mcp-server            # stdio, pour Claude Desktop / Cursor
