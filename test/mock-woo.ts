@@ -32,6 +32,10 @@ const orders = [
     customer_ip_address: "203.0.113.9", transaction_id: "ch_123",
   },
 ];
+const coupons = [
+  { id: 900, code: "WELCOME10", discount_type: "percent", amount: "10.00", free_shipping: false, usage_count: 3, usage_limit: 100, date_expires: "2099-01-01T00:00:00", minimum_amount: "0.00", individual_use: true, status: "publish" },
+  { id: 901, code: "OLD5", discount_type: "fixed_cart", amount: "5.00", free_shipping: false, usage_count: 50, usage_limit: 50, date_expires: "2020-01-01T00:00:00", minimum_amount: "0.00", individual_use: false, status: "publish" },
+];
 const customers = [{ id: 7, email: "marie.dupont@example.com", first_name: "Marie", last_name: "Dupont", date_created: "2025-01-01T00:00:00", orders_count: 3, total_spent: "210.00", billing: { city: "Lyon", country: "FR", phone: "+33612345678" } }];
 
 export async function startMockWoo(opts: { requireAuth?: boolean } = {}): Promise<MockWoo> {
@@ -99,6 +103,10 @@ export async function startMockWoo(opts: { requireAuth?: boolean } = {}): Promis
       if (!o) return notFound("woocommerce_rest_shop_order_invalid_id");
       if (req.method === "PUT") return send(200, { ...o, ...body });
       return send(200, o);
+    }
+    if (path === "coupons") {
+      const items = coupons.filter((c) => !query.code || c.code === query.code);
+      return send(200, items, items.length);
     }
     if (path === "customers") return send(200, customers.filter((c) => !query.search || c.email.includes(query.search) || c.last_name.toLowerCase().includes(query.search.toLowerCase())), 1);
     if (path === "reports/sales") return send(200, [{ total_sales: "1234.50", net_sales: "1028.75", total_orders: 18, total_items: 31, total_refunds: "20.00", average_sales: "176.36", totals: { "2026-11-01": { sales: "68.90", orders: 1 } } }]);
