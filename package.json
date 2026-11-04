@@ -1,0 +1,35 @@
+{
+  "name": "woocommerce-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for WooCommerce: lets an AI agent read a store (products, orders, customers) and propose changes behind a human approval gate.",
+  "license": "MIT",
+  "author": "Walid Sadfi <walid.sadfi@evolurise.com> (https://www.malt.fr/profile/walidsadfi)",
+  "repository": { "type": "git", "url": "git+https://github.com/walidsadfi-evolurise/woocommerce-mcp-server.git" },
+  "keywords": ["mcp", "model-context-protocol", "woocommerce", "wordpress", "ai-agents", "agentic-commerce"],
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "bin": { "woocommerce-mcp-server": "dist/cli.js" },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "lint": "eslint src test",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "eslint": "^9.30.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.35.0",
+    "vitest": "^3.2.0"
+  }
+}

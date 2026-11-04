@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.woo-proposals.json
+*.tmp
+.env
