@@ -96,6 +96,22 @@ approved: Refund 19.00 on order #500 (manual): Cap arrived damaged
 
 The proposals file (`WOO_PROPOSALS_FILE`) is plain JSON, so the approver can be a different process, a cron that posts to Slack, or a tiny back-office page.
 
+## Compared with the official WooCommerce MCP (developer preview)
+
+WooCommerce now exposes its own MCP surface through the WordPress Abilities API plus the separate [MCP Adapter plugin](https://developer.woocommerce.com/docs/features/mcp/). Both are legitimate; they solve different problems.
+
+| | Official WooCommerce MCP (preview) | woocommerce-mcp-server |
+|---|---|---|
+| Runs | Inside WordPress (plugin + WP-CLI for stdio, HTTP via a Node proxy) | Outside the site, against the REST API — nothing to install on the store |
+| Auth | WordPress user + Application Password (HTTP), `--user` with WP-CLI (stdio) | WooCommerce REST API key, **Read** permission is enough for read-only use |
+| Tools | 3 generic tools (`discover`, `get-info`, `execute` ability) over product/order abilities | 8 read tools shaped for store questions (`low_stock_products`, `sales_summary`…) + 6 write proposals |
+| Writes | Direct: create/update/delete products, update order status, add notes | **Proposal → human approval → apply**, disabled unless `WOO_ALLOW_WRITES=true` |
+| Personal data | Returned as-is; the docs advise a dedicated user because order and customer operations can expose personal data | Redacted by default before it reaches the model (emails, phones, names, street lines, IPs) |
+| Approver identity | Same credentials as the agent | Separate admin token; the server refuses to start if both tokens are equal |
+| Status | Developer preview — breaking changes expected, old `/wp-json/woocommerce/mcp` endpoint removed in 11.3 | Stable API, tested against a fake WooCommerce REST API in CI |
+
+Use the official one when you want the Abilities ecosystem and are fine giving the agent a WordPress login. Use this one when the agent must not hold admin rights, someone has to sign off on every change, and customer data should stay out of the context window. They can run side by side.
+
 ## Development
 
 ```bash
