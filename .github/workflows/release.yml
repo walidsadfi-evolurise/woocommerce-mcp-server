@@ -52,3 +52,36 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+
+      # ---- Official MCP Registry (registry.modelcontextprotocol.io) ----
+      # Namespace io.github.<owner> is proven by the GitHub Actions OIDC token; package ownership by the
+      # io.modelcontextprotocol.server.name label on the ghcr.io image pushed above.
+      - name: Check that server.json matches the tag
+        run: |
+          SJ="v$(node -p "require('./server.json').version")"
+          test "$SJ" = "${GITHUB_REF_NAME}" || { echo "server.json version ${SJ} != tag ${GITHUB_REF_NAME}"; exit 1; }
+          node -e "const s=require('./server.json'); const id=s.packages[0].identifier; if(!id.endsWith(':'+process.env.GITHUB_REF_NAME)) { console.error('server.json package identifier '+id+' does not end with :'+process.env.GITHUB_REF_NAME); process.exit(1) }"
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Download and verify mcp-publisher
+        env:
+          MCP_PUBLISHER_VERSION: v1.8.1
+        run: |
+          set -euo pipefail
+          os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+          arch="$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
+          archive="mcp-publisher_${os}_${arch}.tar.gz"
+          base_url="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+          curl --fail --location --silent --show-error --output "$archive" "$base_url/$archive"
+          curl --fail --location --silent --show-error --output "$archive.sigstore.json" "$base_url/$archive.sigstore.json"
+          cosign verify-blob \
+            --bundle "$archive.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$archive"
+          tar xzf "$archive" mcp-publisher
+          rm -f "$archive" "$archive.sigstore.json"
+      - name: Authenticate to the MCP Registry (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+      - name: Publish server.json to the MCP Registry
+        run: ./mcp-publisher publish
