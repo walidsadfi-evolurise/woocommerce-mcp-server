@@ -1,8 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-11-13
 
 - `list_coupons` read tool with `expired` / `exhausted` flags.
+- `npm run check` script (typecheck + lint + tests), which the release workflow already called.
+- Explicit `stdio` command (same as no command), so container runners can pick the transport.
+- Published to the official MCP Registry as `io.github.walidsadfi-evolurise/woocommerce-mcp-server` (OCI image on ghcr.io, `server.json`, OIDC publish step in the release workflow).
 
 ## 0.1.0 — 2026-11-04
 
