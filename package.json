@@ -1,8 +1,9 @@
 {
   "name": "woocommerce-mcp-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MCP server for WooCommerce: lets an AI agent read a store (products, orders, customers) and propose changes behind a human approval gate.",
   "license": "MIT",
+  "mcpName": "io.github.walidsadfi-evolurise/woocommerce-mcp-server",
   "author": "Walid Sadfi <walid.sadfi@evolurise.com> (https://www.malt.fr/profile/walidsadfi)",
   "repository": { "type": "git", "url": "git+https://github.com/walidsadfi-evolurise/woocommerce-mcp-server.git" },
   "keywords": ["mcp", "model-context-protocol", "woocommerce", "wordpress", "ai-agents", "agentic-commerce"],
@@ -18,6 +19,7 @@
     "test": "vitest run",
     "lint": "eslint src test",
     "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm test",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
