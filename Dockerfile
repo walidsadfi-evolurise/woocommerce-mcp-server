@@ -7,6 +7,9 @@ COPY src ./src
 RUN npm run build && npm prune --omit=dev
 
 FROM node:22-alpine
+LABEL io.modelcontextprotocol.server.name="io.github.walidsadfi-evolurise/woocommerce-mcp-server" \
+      org.opencontainers.image.source="https://github.com/walidsadfi-evolurise/woocommerce-mcp-server" \
+      org.opencontainers.image.licenses="MIT"
 ENV NODE_ENV=production
 RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app
