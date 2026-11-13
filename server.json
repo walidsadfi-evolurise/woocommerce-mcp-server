@@ -1,0 +1,70 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.walidsadfi-evolurise/woocommerce-mcp-server",
+  "title": "WooCommerce (human approval gate)",
+  "description": "Read a WooCommerce store (orders, products, customers) with PII masked; writes need human approval",
+  "websiteUrl": "https://walidsadfi.com",
+  "repository": {
+    "url": "https://github.com/walidsadfi-evolurise/woocommerce-mcp-server",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "oci",
+      "registryBaseUrl": "https://ghcr.io",
+      "identifier": "ghcr.io/walidsadfi-evolurise/woocommerce-mcp-server:v0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "stdio",
+          "description": "Start the stdio transport (the image defaults to the HTTP transport)."
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "WOO_URL",
+          "description": "Store URL, e.g. https://shop.example.com",
+          "isRequired": true,
+          "format": "string"
+        },
+        {
+          "name": "WOO_CONSUMER_KEY",
+          "description": "WooCommerce REST API consumer key (read permission is enough for the read tools)",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "WOO_CONSUMER_SECRET",
+          "description": "WooCommerce REST API consumer secret",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "WOO_ALLOW_WRITES",
+          "description": "Set to true to let approved proposals be applied; default false (read-only)",
+          "isRequired": false,
+          "format": "boolean",
+          "default": "false"
+        },
+        {
+          "name": "WOO_REDACT_PII",
+          "description": "Mask customer emails, phones, names and street addresses; default true",
+          "isRequired": false,
+          "format": "boolean",
+          "default": "true"
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "tool": "github-actions",
+      "author": "Walid Sadfi",
+      "homepage": "https://walidsadfi.com"
+    }
+  }
+}
