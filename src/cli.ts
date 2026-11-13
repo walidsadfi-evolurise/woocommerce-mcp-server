@@ -10,7 +10,7 @@ import { createServer } from "./server.js";
 const USAGE = `woocommerce-mcp-server — MCP server for WooCommerce with a human approval gate
 
 Usage:
-  woocommerce-mcp-server                  start on stdio (for Claude Desktop, Cursor, …)
+  woocommerce-mcp-server [stdio]          start on stdio (for Claude Desktop, Cursor, …)
   woocommerce-mcp-server http [--port N]  start the Streamable HTTP transport (default 3333)
   woocommerce-mcp-server proposals        list proposals waiting for review
   woocommerce-mcp-server approve <id>     approve a proposal (id prefix is enough)
@@ -56,7 +56,7 @@ async function main(argv: string[]): Promise<void> {
     return;
   }
 
-  if (cmd !== undefined) throw new Error(`Unknown command "${cmd}".\n\n${USAGE}`);
+  if (cmd !== undefined && cmd !== "stdio") throw new Error(`Unknown command "${cmd}".\n\n${USAGE}`);
   const server = createServer({ config });
   await server.connect(new StdioServerTransport());
   console.error(`woocommerce-mcp-server on stdio → ${config.url} (writes ${config.allowWrites ? "ENABLED" : "disabled"}, PII ${config.redactPii ? "masked" : "VISIBLE"})`);
